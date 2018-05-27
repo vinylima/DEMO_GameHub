@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="6.2.2" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\2.1_Shared\GameHub.Shared.Kernel.Core\GameHub.Shared.Kernel.Core.csproj" />
+    <ProjectReference Include="..\GameHub.Domain.Core\GameHub.Domain.Core.csproj" />
+  </ItemGroup>
+
+</Project>

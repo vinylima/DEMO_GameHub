@@ -1,0 +1,108 @@
+﻿@model IEnumerable<GameHub.Application.ViewModels.GameViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row">
+    <h2 class="pull-left">Meus Jogos</h2>
+    <div class="pull-right">
+        <a asp-action="Create" class="btn btn-primary">
+            <span title="Cadastrar Jogo" class="glyphicon glyphicon-plus-sign" />
+            Cadastrar Jogo
+        </a>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <!-- Card Main-->
+        <div class="card col-lg-3 col-md-3 col-sm-5 col-xs-12">
+            <!-- Banner -->
+            <div class="row">
+                <a href="#" class="">
+                    <img src="@Html.DisplayFor(modelItem => item.ImagePath)" class="img-responsive" />
+                    <h3 class="text-center">@Html.DisplayFor(itemModel => item.Title)</h3>
+                </a>
+            </div>
+            <!-- Informacoes de Detalhes-->
+            <div class="row">
+                <p class="text-muted text">Emprestado para:</p>
+
+                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+                    <a href="#">
+                        <img src="@Html.DisplayFor(modelItem => item.Friend.ImagePath)" class="img-circle img-responsive" />
+                    </a>
+                </div>
+
+                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-8">
+                    <div class="row">
+                        <a href="#" class="h4">@Html.DisplayFor(itemModel => item.Friend.Name)</a>
+                    </div>
+
+                    <div class="row">
+                        <span class="glyphicon glyphicon-calendar col-lg-6 col-md-6 col-sm-6 col-xs-6">
+
+                            @Html.DisplayFor(itemModel => item.LoanDate)
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+            <hr />
+            <!-- Actions-->
+            <div class="row col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 pull-left">
+                    <a href="#" title="Visualizar" class="btn btn-primary" role="button">
+                        <span class="glyphicon glyphicon-eye-open" />
+                    </a>
+                </div>
+
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 pull-left">
+                    <a href="#" title="Dar Baixa" class="btn btn-success" role="button">
+                        <span class="glyphicon glyphicon-check" />
+                    </a>
+                </div>
+
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 pull-left">
+                    <a href="#" title="Editar" class="btn btn-warning" role="button">
+                        <span class="glyphicon glyphicon-pencil" />
+                    </a>
+                </div>
+
+                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 pull-left">
+                    <a href="#" title="Excluir" class="btn btn-danger" role="button">
+                        <span class="glyphicon glyphicon-trash" />
+                    </a>
+                </div>
+                <!--
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 bg-primary">
+            iv>
+
+            </div>
+            <a href="#" class="btn btn-primary" role="button">
+                <span class="glyphicon glyphicon-eye-open" />
+                Visualizar
+            </a>
+
+            <a href="#" class="btn btn-primary" role="button">
+                <span class="glyphicon glyphicon-check" />
+                Dar Baixa
+            </a>
+        </div>
+        -->
+            </div>
+        </div>
+            
+            <!--
+            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                <img src="@Html.DisplayFor(modelItem => item.ImagePath)" class="img-responsive" />
+                <h3>@Html.DisplayFor(itemModel => item.Title)</h3>
+            </div>
+            -->
+        }
+    </div>
+</div>

@@ -1,0 +1,55 @@
+﻿@model GameHub.Application.ViewModels.GameViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container">
+    <h2>Cadastro de Novo Jogo</h2>
+
+    <hr />
+    <div class="row">
+        <div class="col-md-4 text-c">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ImagePath" class="control-label"></label>
+                    <input asp-for="ImagePath" class="form-control" />
+                    <span asp-validation-for="ImagePath" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <input asp-for="IsFavorite" /> @Html.DisplayNameFor(model => model.IsFavorite)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="pull-left">
+                    <a asp-action="Index" class="btn btn-default" role="button">
+                        <span class="glyphicon glyphicon-backward" />
+                        VOLTAR
+                    </a>
+                </div>
+                <div class="form-group pull-right">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+    
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,58 @@
+﻿@model GameHub.Application.ViewModels.FriendViewModel
+
+@{
+    ViewData["Title"] = "Editar";
+}
+
+<div class="container">
+    <div class="row">
+        <h2>Edição de Amigo</h2>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <img src="@Html.DisplayFor(itemModel => Model.ImagePath)" class="img-thumbnail"/>
+        </div>
+        <div class="col-md-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ImagePath" class="control-label"></label>
+                    <input asp-for="ImagePath" class="form-control" />
+                    <span asp-validation-for="ImagePath" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ReputationLevel" class="control-label"></label>
+                    <input asp-for="ReputationLevel" class="form-control" disabled />
+                    <span asp-validation-for="ReputationLevel" class="text-danger"></span>
+                </div>
+                <div class="pull-left">
+                    <a asp-action="Index" class="btn btn-default" role="button">
+                        <span class="glyphicon glyphicon-backward" />
+                        VOLTAR
+                    </a>
+                </div>
+                
+                <div class="form-group pull-right">
+                    <input type="submit" value="Salvar !!" title="Salvar" class="btn btn-primary" />
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

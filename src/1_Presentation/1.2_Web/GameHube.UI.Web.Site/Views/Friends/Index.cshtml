@@ -1,0 +1,73 @@
+﻿@model IEnumerable<GameHub.Application.ViewModels.FriendViewModel>
+
+@{
+    ViewData["Title"] = "Meus Amigos";
+}
+
+<div class="container">
+    <div class="row">
+        <h2 class="pull-left">Meus Amigos</h2>
+        <div class="pull-right">
+            <a asp-action="Create" class="btn btn-primary">
+                <span title="Cadastrar Amigo" class="glyphicon glyphicon-plus-sign" />
+                Novo Amigo
+            </a>
+        </div>
+    </div>
+    <hr />
+    <div class="panel panel-default">
+        <table class="table table-bordered table-responsive table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ImagePath)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Email)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ReputationLevel)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr style="height: 10px; max-height:25px; padding: 0px">
+                        <td>
+                            <img src="@Html.DisplayFor(modelItem => item.ImagePath)" class="ThumbPic" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ReputationLevel)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.FriendId" title="Editar" class="btn btn-warning">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
+
+                            <a asp-action="Details" asp-route-id="@item.FriendId" title="Visualizar" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                            </a>
+
+                            <a asp-action="Delete" asp-route-id="@item.FriendId" title="Excluir" class="btn btn-danger">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    
+</div>
