@@ -1,6 +1,8 @@
 ﻿
 using System;
 using System.ComponentModel.DataAnnotations;
+using GameHub.Shared.Kernel.Core.Collections;
+using GameHub.Shared.Kernel.Core.Interfaces.Collections;
 
 namespace GameHub.Application.ViewModels
 {
@@ -11,19 +13,18 @@ namespace GameHub.Application.ViewModels
         private string imagePath;
         private bool isFavorite;
         private bool isBorrowed;
-        private DateTime loanDate;
-        private DateTime devolutionPrevision;
         private DateTime? lastLoan;
         private string status;
-        
-        private FriendViewModel friend;
+
+        private LoanViewModel currentLoan;
+
+        private BaseCollection<LoanViewModel> loans;
 
         public GameViewModel()
         {
             this.GameId = Guid.NewGuid();
-            this.Friend = new FriendViewModel();
         }
-        
+
         #region Gets and Sets
 
         [Key]
@@ -33,7 +34,7 @@ namespace GameHub.Application.ViewModels
             set { SetProperty(ref this.gameId, value); }
         }
 
-        [Display (Name = "Titulo")]
+        [Display(Name = "Titulo")]
         [Required(ErrorMessage = "Por favor, insira o Nome do Jogo, informação necessária.")]
         [MinLength(5, ErrorMessage = "O Nome do Jogo precisa ter ao menos 5 Caracteres.")]
         [MaxLength(30, ErrorMessage = "O Nome desse Jogo está muito grande pra lembrar depois... Por favor, reduza para 30 caracteres no máximo.")]
@@ -42,15 +43,16 @@ namespace GameHub.Application.ViewModels
             get { return title; }
             set { SetProperty(ref this.title, value); }
         }
-        
-        [Required (ErrorMessage = "Para facilitar a visualizacao do Jogo, por favor, coloque uma imagem.")]
+
+        [Display(Name = "Banner")]
+        [Required(ErrorMessage = "Para facilitar a visualizacao do Jogo, por favor, coloque uma imagem.")]
         public string ImagePath
         {
             get { return imagePath; }
             set { SetProperty(ref this.imagePath, value); }
         }
 
-        [Display (Name = "Jogo Favorito?")]
+        [Display(Name = "Jogo Favorito?")]
         public bool IsFavorite
         {
             get { return isFavorite; }
@@ -64,20 +66,6 @@ namespace GameHub.Application.ViewModels
             set { SetProperty(ref this.isBorrowed, value); }
         }
 
-        [Display(Name ="Emprestado Em:")]
-        public DateTime LoanDate
-        {
-            get { return loanDate; }
-            set { SetProperty(ref this.loanDate, value); }
-        }
-
-        [Display(Name = "Previsão de Devolução:")]
-        public DateTime DevolutionPrevision
-        {
-            get { return this.devolutionPrevision; }
-            set { SetProperty(ref this.devolutionPrevision, value); }
-        }
-        
         [Display(Name = "Último Empréstimo:")]
         public DateTime? LastLoan
         {
@@ -92,10 +80,31 @@ namespace GameHub.Application.ViewModels
             set { SetProperty(ref this.status, value); }
         }
 
-        public FriendViewModel Friend
+        public LoanViewModel CurrentLoan
         {
-            get { return friend; }
-            set { SetProperty(ref this.friend, value); }
+            get
+            {
+                if (this.currentLoan == null)
+                    this.currentLoan = new LoanViewModel();
+
+                return this.currentLoan;
+            }
+            set { SetProperty(ref this.currentLoan, value); }
+        }
+
+        public BaseCollection<LoanViewModel> Loans
+        {
+            get
+            {
+                if (this.loans == null)
+                    this.loans = new BaseCollection<LoanViewModel>();
+
+                return this.loans;
+            }
+            set
+            {
+                this.loans = value;
+            }
         }
 
         #endregion

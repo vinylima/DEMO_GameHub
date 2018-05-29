@@ -18,8 +18,8 @@ namespace GameHub.Domain.Core.Models
         public bool IsBorrowed { get; private set; }
         
         public DateTime? LastLoan { get; private set; }
-
-        public Friend Friend { get; private set; }
+        
+        public Loan CurrentLoan { get; private set; }
         public LoanCollection Loans { get; private set; }
 
         #region Constructors
@@ -37,7 +37,7 @@ namespace GameHub.Domain.Core.Models
         }
 
         public Game(Guid gameId, string title, Uri imagePath, bool isFavorite, bool isBorrowed,
-            DateTime lastLoan, Friend friend)
+            DateTime lastLoan, Loan currentLoan)
         {
             this.GameId = gameId;
             this.Title = title;
@@ -45,7 +45,7 @@ namespace GameHub.Domain.Core.Models
             this.IsFavorite = isFavorite;
             this.IsBorrowed = isBorrowed;
             this.LastLoan = lastLoan;
-            this.Friend = friend;
+            this.CurrentLoan = currentLoan;
         }
 
         #endregion
@@ -53,7 +53,7 @@ namespace GameHub.Domain.Core.Models
         #region Factories
 
         public static Game CreateNew(Guid gameId, string title, Uri imagePath, bool isFavorite, bool isBorrowed,
-            DateTime? lastLoan, Friend friend)
+            DateTime? lastLoan)
         {
             return new Game
             {
@@ -63,17 +63,42 @@ namespace GameHub.Domain.Core.Models
                 IsFavorite = isFavorite,
                 IsBorrowed = isBorrowed,
                 LastLoan = lastLoan,
-                Friend = friend,
             };
         }
 
-        public static Game CreateNew(Guid gameId, string title, Uri imagePath)
+        public static Game CreateNew(string title, Uri imagePath, bool isFavorite, bool isBorrowed,
+            DateTime? lastLoan)
+        {
+            return new Game
+            {
+                GameId = Guid.NewGuid(),
+                Title = title,
+                ImagePath = imagePath.ToString(),
+                IsFavorite = isFavorite,
+                IsBorrowed = isBorrowed,
+                LastLoan = lastLoan,
+            };
+        }
+
+        public static Game CreateNew(Guid gameId, string title, Uri imagePath, bool isFavorite)
         {
             return new Game
             {
                 GameId = gameId,
                 Title = title,
                 ImagePath = imagePath.ToString(),
+                IsFavorite = isFavorite,
+            };
+        }
+
+        public static Game CreateNew(string title, Uri imagePath, bool isFavorite)
+        {
+            return new Game
+            {
+                GameId = Guid.NewGuid(),
+                Title = title,
+                ImagePath = imagePath.ToString(),
+                IsFavorite = isFavorite,
             };
         }
 
@@ -97,5 +122,20 @@ namespace GameHub.Domain.Core.Models
         {
             return this.GameId;
         }
+        
+        public void LendTo(Friend friend)
+        {
+            if (friend != null)
+                this.CurrentLoan = Loan.CreateNew(this, friend);
+        }
+
+        public void AssignLoan(Loan loan)
+        { this.CurrentLoan = loan; }
+
+        public void DefineLastLoanDate(DateTime loanDate)
+        { this.LastLoan = loanDate; }
+
+        public void DefineBorrowedStatus(bool isBorrowed)
+        { this.IsBorrowed = isBorrowed; }
     }
 }

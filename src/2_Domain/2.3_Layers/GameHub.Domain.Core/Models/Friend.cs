@@ -50,6 +50,17 @@ namespace GameHub.Domain.Core.Models
             };
         }
 
+        public static Friend CreateNew(string name, string imagePath, string email)
+        {
+            return new Friend
+            {
+                FriendId = Guid.NewGuid(),
+                Name = name,
+                ImagePath = imagePath,
+                Email = email,
+            };
+        }
+
         #endregion
 
         public void Dispose()

@@ -180,14 +180,14 @@ namespace GameHub.Domain.Core.Services
             return result;
         }
         
-        public virtual IExecutionResult<BaseCollection<TEntity>> Find(Expression<Func<TEntity, bool>> predicate, bool tracking)
+        public virtual IExecutionResult<BaseCollection<TEntity>> Find(Expression<Func<TEntity, bool>> predicate)
         {
-            return this.Repository.Find(predicate, tracking);
+            return this.Repository.Find(predicate);
         }
 
-        public virtual async Task<IExecutionResult<BaseCollection<TEntity>>> FindAsync(Expression<Func<TEntity, bool>> predicate, bool tracking)
+        public virtual async Task<IExecutionResult<BaseCollection<TEntity>>> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return await this.Repository.FindAsync(predicate, tracking);
+            return await this.Repository.FindAsync(predicate);
         }
 
         public virtual void Dispose()

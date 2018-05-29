@@ -22,7 +22,7 @@ namespace GameHube.UI.Web.Site.Controllers
         }
 
         // GET: Friends
-        public async Task<ActionResult> Index()
+        public async Task<IActionResult> Index()
         {
             var result = await this._friendAppService.LoadAllAsync();
             
@@ -65,7 +65,12 @@ namespace GameHube.UI.Web.Site.Controllers
                 result = await this._friendAppService.SaveAsync(friendViewModel);
 
                 if (result.Success)
+                {
+                    friendViewModel.Dispose();
+                    friendViewModel = null;
+
                     return RedirectToAction(nameof(Index));
+                }
             }
             catch(Exception e)
             {
@@ -105,7 +110,12 @@ namespace GameHube.UI.Web.Site.Controllers
                 result = await this._friendAppService.SaveAsync(viewModel);
 
                 if (result.Success)
+                {
+                    viewModel.Dispose();
+                    viewModel = null;
+
                     return RedirectToAction(nameof(Index));
+                }
             }
             catch (Exception e)
             {
@@ -136,18 +146,26 @@ namespace GameHube.UI.Web.Site.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id, FriendViewModel friendViewModel)
         {
+            IExecutionResult<bool> result = null;
 
             try
             {
-                await this._friendAppService.RemoveAsync(id);
-                // TODO: Add delete logic here
+                result = await this._friendAppService.RemoveAsync(id);
 
-                return RedirectToAction(nameof(Index));
+                if(result.Success)
+                {
+                    friendViewModel.Dispose();
+                    friendViewModel = null;
+
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            catch
+            catch(Exception e)
             {
-                return View();
+                result.SystemErrors.Add(new Message("Erro ao Excluir um Amigo: " + e.Message.ToString()));
             }
+
+            return View(friendViewModel);
         }
     }
 }

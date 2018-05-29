@@ -8,89 +8,44 @@ using GameHub.Application.Interfaces;
 using GameHub.Application.ViewModels;
 using Microsoft.AspNetCore.Http;
 using GameHub.Shared.Kernel.Core.Interfaces;
+using GameHub.Shared.Kernel.Core.ValueObjects;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GameHube.UI.Web.Site.Controllers
 {
     public class GamesController : Controller
     {
         private IGameAppService _gameAppService { get; set; }
-        public GamesController(IGameAppService gameAppService)
+        private IFriendAppService _friendAppService { get; set; }
+
+        public GamesController(IGameAppService gameAppService, IFriendAppService friendAppService)
         {
             this._gameAppService = gameAppService;
+            this._friendAppService = friendAppService;
         }
 
         // GET: Games
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            List<GameViewModel> games = new List<GameViewModel>
-            {
-                new GameViewModel
-                {
-                    GameId = Guid.NewGuid(),
-                    Title = "Call Of Duty - Infinite Warfare",
-                    ImagePath = "https://www.maistecnologia.com/wp-content/uploads/2016/09/Call-of-Duty-Infinite-Warfare.png",
-                    IsFavorite = true,
-                    IsBorrowed = true,
-                    LoanDate = new DateTime(2018, 05, 20),
-                    DevolutionPrevision = new DateTime(2018, 08, 20),
-                    Status = "Restam 150 dias para o jogo ser devolvido",
-                    Friend = new FriendViewModel
-                    {
-                        FriendId = Guid.NewGuid(),
-                        Name = "Angelina Nolowvski",
-                        ImagePath = "https://img.ibxk.com.br/2012/1/materias/17166216157.jpg",
-                    },
-                },
-                /*
-                new GameViewModel
-                {
-                    GameId = Guid.NewGuid(),
-                    Title = "State Of Decay 2",
-                    ImagePath = new Uri("https://gematsu.com/wp-content/uploads/2017/06/State-Decay-2-Spring-2018-Init.jpg"),
-                    IsFavorite = false,
-                    IsBorrowed = true,
-                    LoanDate = new DateTime(2018, 05, 20),
-                    PredictionReturn = new DateTime(2018, 08, 20),
-                    Status = "Restam 150 dias para o jogo ser devolvido",
-                    Friend = new FriendViewModel
-                    {
-                        FriendId = Guid.NewGuid(),
-                        Name = "Sabrina Mello Batista",
-                        Email = "joao@gmail.com",
-                        ImagePath = new Uri("http://www.projetandopessoas.com.br/wp-content/uploads/2017/09/Flavia-Fehlberg.jpg"),
-                    },
-                },
+            var result = await this._gameAppService.LoadAllAsync();
 
-                new GameViewModel
-                {
-                    GameId = Guid.NewGuid(),
-                    Title = "End Of Game 2",
-                    ImagePath = new Uri("https://gematsu.com/wp-content/uploads/2017/06/State-Decay-2-Spring-2018-Init.jpg"),
-                    IsFavorite = false,
-                    IsBorrowed = true,
-                    Status = "Restam 150 dias para o jogo ser devolvido"
-                },
-
-                new GameViewModel
-                {
-                    GameId = Guid.NewGuid(),
-                    Title = "End Of Game 2",
-                    ImagePath = new Uri("https://gematsu.com/wp-content/uploads/2017/06/State-Decay-2-Spring-2018-Init.jpg"),
-                    IsFavorite = false,
-                    IsBorrowed = true,
-                    Status = "Restam 150 dias para o jogo ser devolvido"
-                },
-                */
-            };
-
-            
-            return View(games);
+            return View(result.ReturnResult);
         }
 
         // GET: Games/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(Guid id)
         {
-            return View();
+            IExecutionResult<GameViewModel> result;
+
+            result = await this._gameAppService.SearchByIdAsync(id, true);
+
+            if (!result.Success)
+            {
+                // trabalhar em mensagens de erro.
+            }
+
+            return View(result.ReturnResult);
         }
 
         // GET: Games/Create
@@ -102,81 +57,118 @@ namespace GameHube.UI.Web.Site.Controllers
         // POST: Games/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(GameViewModel gameViewModel)
+        public async Task<IActionResult> Create(GameViewModel gameViewModel)
         {
-            IExecutionResult<bool> result;
-
-            gameViewModel.GameId = new Guid("a1424fd7-1fc8-43ca-c619-08d5c379cd46");
-            gameViewModel.Title = "Mortal Kombat";
+            IExecutionResult<bool> result = null;
+            
             try
             {
-                // TODO: Add insert logic here
+                /*
+                if (!ModelState.IsValid)
+                    return View(gameViewModel);
+                    */
+                result = await this._gameAppService.SaveAsync(gameViewModel);
 
-                if (ModelState.IsValid)
+                if (result.Success)
                 {
-                    result = this._gameAppService.Save(gameViewModel);
+                    gameViewModel.Dispose();
+                    gameViewModel = null;
 
-                    if (result.Success)
-                    {
-                        result.Dispose();
-                        result = null;
-
-                        return RedirectToAction(nameof(Index));
-                    }
+                    return RedirectToAction(nameof(Index));
                 }
             }
-            catch
+            catch(Exception e)
             {
-
+                result.SystemErrors.Add(new Message("Erro ao Cadastrar um Jogo: " + e.Message.ToString()));
             }
             
             return View(gameViewModel);
         }
 
         // GET: Games/Edit/5
-        public ActionResult Edit(int id)
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
         {
-            return View();
+            var result = await this._gameAppService.SearchByIdAsync(id);
+
+            ViewBag.Friends = this._friendAppService.LoadAll().ReturnResult;
+            
+            if (!result.Success)
+            {
+                // implementar aqui exibicao da mensagem de erro
+            }
+            
+            return View(result.ReturnResult);
         }
 
         // POST: Games/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(Guid id, GameViewModel gameViewModel)
         {
+            IExecutionResult<bool> result = null;
             try
             {
-                // TODO: Add update logic here
+                gameViewModel.GameId = id;
+                
+                result = await this._gameAppService.SaveAsync(gameViewModel);
 
-                return RedirectToAction(nameof(Index));
+                if (result.Success)
+                {
+                    gameViewModel.Dispose();
+                    gameViewModel = null;
+
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            catch
+            catch (Exception e)
             {
-                return View();
+                result.SystemErrors.Add(new Message("Erro ao Atualizar os dados do seu Jogo: " + e.Message.ToString()));
             }
+
+            return View(gameViewModel);
         }
 
         // GET: Games/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            return View();
+            IExecutionResult<GameViewModel> result;
+
+            result = await this._gameAppService.SearchByIdAsync(id);
+
+            if (!result.Success)
+            {
+                // trabalhar em mensagens de erro.
+            }
+
+            return View(result.ReturnResult);
         }
 
         // POST: Games/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(Guid id, GameViewModel gameViewModel)
         {
+            IExecutionResult<bool> result = null;
+
             try
             {
-                // TODO: Add delete logic here
+                result = await this._gameAppService.RemoveAsync(id);
 
-                return RedirectToAction(nameof(Index));
+                if (result.Success)
+                {
+                    gameViewModel.Dispose();
+                    gameViewModel = null;
+
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            catch
+            catch (Exception e)
             {
-                return View();
+                result.SystemErrors.Add(new Message("Erro ao Excluir seu Jogo: " + e.Message.ToString()));
             }
+
+            return View(gameViewModel);
         }
     }
 }

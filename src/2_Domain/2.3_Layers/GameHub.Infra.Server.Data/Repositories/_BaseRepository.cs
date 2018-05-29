@@ -78,12 +78,30 @@ namespace GameHub.Infra.Server.Data.Repositories
 
         public virtual IExecutionResult SaveRange(TEntity[] array)
         {
-            throw new NotImplementedException();
+            IExecutionResult result = new ExecutionResult();
+
+            foreach(var item in array)
+            {
+                result.Merge(
+                    this.Save(item)
+                );
+            }
+
+            return result;
         }
 
         public virtual async Task<IExecutionResult> SaveRangeAsync(TEntity[] array)
         {
-            throw new NotImplementedException();
+            IExecutionResult result = new ExecutionResult();
+
+            foreach (var item in array)
+            {
+                result.Merge(
+                    await this.SaveAsync(item)
+                );
+            }
+
+            return result;
         }
 
         public virtual IExecutionResult<bool> Exists(Guid id)
@@ -366,31 +384,19 @@ namespace GameHub.Infra.Server.Data.Repositories
             return execResult;
         }
 
-        public IExecutionResult<BaseCollection<TEntity>> Find(Expression<Func<TEntity, bool>> predicate, bool tracking = false)
+        public IExecutionResult<BaseCollection<TEntity>> Find(Expression<Func<TEntity, bool>> predicate)
         {
             var execResult = new ExecutionResult<BaseCollection<TEntity>>();
 
             try
             {
-                if (tracking)
-                {
-                    execResult.DefineResult(
-                        new BaseCollection<TEntity>(
-                            this.RawDb.Set<TEntity>()
-                                .Where(predicate)
-                        )
-                    );
-                }
-                else
-                {
-                    execResult.DefineResult(
-                        new BaseCollection<TEntity>(
-                            this.RawDb.Set<TEntity>()
-                                .AsNoTracking()
-                                .Where(predicate)
-                        )
-                    );
-                }
+                execResult.DefineResult(
+                    new BaseCollection<TEntity>(
+                        this.RawDb.Set<TEntity>()
+                            .AsNoTracking()
+                            .Where(predicate)
+                    )
+                );
             }
             catch (Exception e)
             {
@@ -402,31 +408,19 @@ namespace GameHub.Infra.Server.Data.Repositories
             return execResult;
         }
 
-        public async Task<IExecutionResult<BaseCollection<TEntity>>> FindAsync(Expression<Func<TEntity, bool>> predicate, bool tracking = false)
+        public async Task<IExecutionResult<BaseCollection<TEntity>>> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
             var execResult = new ExecutionResult<BaseCollection<TEntity>>();
 
             try
             {
-                if (tracking)
-                {
-                    execResult.DefineResult(
-                        new BaseCollection<TEntity>(
-                            this.RawDb.Set<TEntity>()
-                                .Where(predicate)
-                        )
-                    );
-                }
-                else
-                {
-                    execResult.DefineResult(
-                        new BaseCollection<TEntity>(
-                            this.RawDb.Set<TEntity>()
-                                .AsNoTracking()
-                                .Where(predicate)
-                        )
-                    );
-                }
+                execResult.DefineResult(
+                    new BaseCollection<TEntity>(
+                        this.RawDb.Set<TEntity>()
+                            .AsNoTracking()
+                            .Where(predicate)
+                    )
+                );
             }
             catch (Exception e)
             {
@@ -438,26 +432,17 @@ namespace GameHub.Infra.Server.Data.Repositories
             return execResult;
         }
 
-        public virtual IExecutionResult<IQueryable<TEntity>> Where(Expression<Func<TEntity, bool>> predicate, bool tracking = false)
+        public virtual IExecutionResult<IQueryable<TEntity>> Where(Expression<Func<TEntity, bool>> predicate)
         {
             var result = new ExecutionResult<IQueryable<TEntity>>();
 
             try
             {
-                if (tracking)
-                {
-                    result.DefineResult(
-                        this.RawDb.Set<TEntity>().Where(predicate)
-                    );
-                }
-                else
-                {
-                    result.DefineResult(
-                        this.RawDb.Set<TEntity>()
-                            .AsNoTracking()
-                            .Where(predicate)
-                    );
-                }
+                result.DefineResult(
+                    this.RawDb.Set<TEntity>()
+                        .AsNoTracking()
+                        .Where(predicate)
+                );
             }
             catch (Exception e)
             {
@@ -469,26 +454,17 @@ namespace GameHub.Infra.Server.Data.Repositories
             return result;
         }
 
-        public virtual async Task<IExecutionResult<IQueryable<TEntity>>> WhereAsync(Expression<Func<TEntity, bool>> predicate, bool tracking)
+        public virtual async Task<IExecutionResult<IQueryable<TEntity>>> WhereAsync(Expression<Func<TEntity, bool>> predicate)
         {
             var result = new ExecutionResult<IQueryable<TEntity>>();
 
             try
             {
-                if (tracking)
-                {
-                    result.DefineResult(
-                        this.RawDb.Set<TEntity>().Where(predicate)
-                    );
-                }
-                else
-                {
-                    result.DefineResult(
-                        this.RawDb.Set<TEntity>()
-                            .AsNoTracking()
-                            .Where(predicate)
-                    );
-                }
+                result.DefineResult(
+                    this.RawDb.Set<TEntity>()
+                        .AsNoTracking()
+                        .Where(predicate)
+                );
             }
             catch (Exception e)
             {

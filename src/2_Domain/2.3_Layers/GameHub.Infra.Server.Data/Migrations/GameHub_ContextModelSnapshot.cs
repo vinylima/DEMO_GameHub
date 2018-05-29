@@ -89,7 +89,7 @@ namespace GameHub.Infra.Server.Data.Migrations
 
                     b.Property<DateTime>("DevolutionPrevision");
 
-                    b.Property<DateTime>("EfectiveDevolution");
+                    b.Property<DateTime?>("EfectiveDevolution");
 
                     b.Property<Guid>("FriendId");
 

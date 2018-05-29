@@ -1,6 +1,8 @@
 ﻿
 using System;
 using System.ComponentModel.DataAnnotations;
+
+using GameHub.Shared.Kernel.Core.Collections;
 using GameHub.Shared.Kernel.Core.Enums;
 using GameHub.Shared.Kernel.Core.Interfaces.Collections;
 
@@ -14,7 +16,7 @@ namespace GameHub.Application.ViewModels
         private string email;
         private ReputationLevel reputationLevel;
 
-        private IBaseCollection<GameViewModel> games;
+        private BaseCollection<GameViewModel> games;
         
         #region Gets and Sets
 
@@ -56,7 +58,7 @@ namespace GameHub.Application.ViewModels
             set { SetProperty(ref this.reputationLevel, value); }
         }
 
-        public IBaseCollection<GameViewModel> Games
+        public BaseCollection<GameViewModel> Games
         {
             get { return this.games; }
             set { SetProperty(ref this.games, value); }

@@ -48,7 +48,7 @@ namespace GameHub.Domain.Core.Models
 
         public DateTime LoanDate { get; private set; }
         public DateTime DevolutionPrevision { get; private set; }
-        public DateTime EfectiveDevolution { get; private set; }
+        public DateTime? EfectiveDevolution { get; private set; }
 
         #endregion
 
@@ -57,57 +57,45 @@ namespace GameHub.Domain.Core.Models
         public Loan()
         {
             this.LoanId = Guid.NewGuid();
+        }
+        
+        public Loan(Game game, Friend friend, DateTime loanDate) : base()
+        {
+            this.Game = game;
+            this.Friend = friend;
 
-            this.Friend = new Friend();
-            this.Game = new Game();
+            this.LoanDate = loanDate;
         }
 
-        public Loan(Guid loanId, Guid gameId, Game game, Guid friendId, Friend friend)
+        public Loan(Game game, Friend friend, DateTime loanDate, DateTime devolutionPrevision) : base()
         {
-            this.LoanId = loanId;
-
-            this.GameId = gameId;
             this.Game = game;
-
-            this.FriendId = friendId;
             this.Friend = friend;
-        }
 
-        public Loan(Guid gameId, Game game, Guid friendId, Friend friend)
-        {
-            this.LoanId = Guid.NewGuid();
-
-            this.GameId = gameId;
-            this.Game = game;
-
-            this.FriendId = friendId;
-            this.Friend = friend;
+            this.LoanDate = loanDate;
+            this.DevolutionPrevision = devolutionPrevision;
         }
 
         #endregion
 
         #region Factories
 
-        public static Loan CreateNew(Guid loanId, Guid gameId, Game game, Guid friendId, Friend friend)
+        public static Loan CreateNew(Guid loanId, Game game, Friend friend)
         {
             return new Loan
             {
                 LoanId = loanId,
-                GameId = gameId,
                 Game = game,
-                FriendId = friendId,
                 Friend = friend,
             };
         }
 
-        public Loan CreateNew(Guid gameId, Game game, Guid friendId, Friend friend)
+        public static Loan CreateNew(Game game, Friend friend)
         {
             return new Loan
             {
                 LoanId = Guid.NewGuid(),
-                GameId = gameId,
                 Game = game,
-                FriendId = friendId,
                 Friend = friend,
             };
         }

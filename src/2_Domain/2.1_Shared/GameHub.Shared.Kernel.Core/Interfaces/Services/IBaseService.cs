@@ -35,8 +35,8 @@ namespace GameHub.Shared.Kernel.Core.Interfaces.Services
 
         Task<IExecutionResult<BaseCollection<TModel>>> LoadAllAsync();
 
-        IExecutionResult<BaseCollection<TModel>> Find(Expression<Func<TModel, bool>> predicate, bool tracking);
+        IExecutionResult<BaseCollection<TModel>> Find(Expression<Func<TModel, bool>> predicate);
 
-        Task<IExecutionResult<BaseCollection<TModel>>> FindAsync(Expression<Func<TModel, bool>> predicate, bool tracking);
+        Task<IExecutionResult<BaseCollection<TModel>>> FindAsync(Expression<Func<TModel, bool>> predicate);
     }
 }

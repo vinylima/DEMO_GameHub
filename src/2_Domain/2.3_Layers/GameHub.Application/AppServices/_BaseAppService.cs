@@ -18,17 +18,13 @@ namespace GameHub.Application.AppServices
         where TViewModel : IViewModel
         where TModel : IModel
     {
-        private readonly IBaseService<TModel> _baseService;
-        private readonly IMapper _mapper;
+        protected IBaseService<TModel> BaseService;
+        protected IMapper Mapper;
 
-        protected BaseCollection<TViewModel> tempDb { get; private set; }
-
-        public BaseAppService(IBaseService<TModel> baseService/*, IMapper mapper*/)
+        public BaseAppService(IBaseService<TModel> baseService, IMapper mapper)
         {
-            this._baseService = baseService;
-            //this._mapper = mapper;
-
-            this.tempDb = new BaseCollection<TViewModel>();
+            this.BaseService = baseService;
+            this.Mapper = mapper;
         }
         //Ok
         public virtual IExecutionResult<bool> Save(TViewModel obj)
@@ -38,7 +34,7 @@ namespace GameHub.Application.AppServices
             var model = this.ConvertViewModelToModel(obj);
 
             result.Merge(
-                this._baseService.Save(model),
+                this.BaseService.Save(model),
                 true
             );
 
@@ -48,11 +44,11 @@ namespace GameHub.Application.AppServices
         public virtual async Task<IExecutionResult<bool>> SaveAsync(TViewModel obj)
         {
             var result = new ExecutionResult<bool>();
-
+            
             var model = this.ConvertViewModelToModel(obj);
 
             result.Merge(
-                await this._baseService.SaveAsync(model),
+                await this.BaseService.SaveAsync(model),
                 true
             );
 
@@ -63,31 +59,40 @@ namespace GameHub.Application.AppServices
         {
             var execResult = new ExecutionResult();
 
-            
-            this.tempDb.AddRange(array);
+            foreach (var item in array)
+            {
+                execResult.Merge(
+                    this.Save(item)
+                );
+            }
 
             return execResult;
         }
 
         public virtual async Task<IExecutionResult> SaveRangeAsync(TViewModel[] array)
         {
-            var result = new ExecutionResult();
+            var execResult = new ExecutionResult();
 
-            this.tempDb.AddRange(array);
+            foreach (var item in array)
+            {
+                execResult.Merge(
+                    await this.SaveAsync(item)
+                );
+            }
 
-            return await Task.FromResult(result);
+            return execResult;
         }
         
         public virtual IExecutionResult<bool> Exists(Guid id)
         {
-            return this._baseService.Exists(id);
+            return this.BaseService.Exists(id);
         }
         //ok
         public virtual IExecutionResult<BaseCollection<TViewModel>> LoadAll()
         {
             var execResult = new ExecutionResult<BaseCollection<TViewModel>>();
 
-            var result = this._baseService.LoadAll();
+            var result = this.BaseService.LoadAll();
 
             execResult.Merge(result);
 
@@ -102,7 +107,7 @@ namespace GameHub.Application.AppServices
         {
             var execResult = new ExecutionResult<BaseCollection<TViewModel>>();
 
-            var result = await this._baseService.LoadAllAsync();
+            var result = await this.BaseService.LoadAllAsync();
 
             execResult.Merge(result);
             
@@ -120,7 +125,7 @@ namespace GameHub.Application.AppServices
         {
             var execResult = new ExecutionResult<bool>();
 
-            var result = this._baseService.Remove(id);
+            var result = this.BaseService.Remove(id);
 
             execResult.Merge(result);
 
@@ -136,7 +141,7 @@ namespace GameHub.Application.AppServices
         {
             var execResult = new ExecutionResult<bool>();
 
-            var result = await this._baseService.RemoveAsync(id);
+            var result = await this.BaseService.RemoveAsync(id);
 
             execResult.Merge(result);
 
@@ -152,7 +157,7 @@ namespace GameHub.Application.AppServices
         {
             IExecutionResult<TViewModel> execResult = new ExecutionResult<TViewModel>();
 
-            var result = this._baseService.SearchById(id);
+            var result = this.BaseService.SearchById(id);
 
             execResult.Merge(result);
 
@@ -170,7 +175,7 @@ namespace GameHub.Application.AppServices
         {
             IExecutionResult<TViewModel> execResult = new ExecutionResult<TViewModel>();
 
-            var result = await this._baseService.SearchByIdAsync(id);
+            var result = await this.BaseService.SearchByIdAsync(id);
 
             execResult.Merge(result);
 

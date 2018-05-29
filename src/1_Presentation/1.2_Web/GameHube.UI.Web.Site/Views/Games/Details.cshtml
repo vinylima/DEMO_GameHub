@@ -1,0 +1,127 @@
+﻿@model GameHub.Application.ViewModels.GameViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container">
+    <div class="row">
+        <h2>Este é o Seu Jogo</h2>
+    </div>
+    <hr />
+    <div class="col-md-6">
+        <img src="@Html.DisplayFor(model => model.ImagePath)" class="img-thumbnail center-block" />
+        <h4 class="text-center">@Html.DisplayFor(model => model.Title)</h4>
+        <dl class="dl-horizontal">
+            
+            <dt>
+                @Html.DisplayNameFor(model => model.IsFavorite)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.IsFavorite)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.IsBorrowed)
+            </dt>
+            <dd>
+                @if (Model.IsBorrowed)
+                {
+                    <strong>Sim</strong>
+                }
+                else
+                {
+                    <strong>Não</strong>
+                }
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.LastLoan)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.LastLoan)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Status)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Status)
+            </dd>
+        </dl>
+        <div class="row">
+            <div class="pull-left">
+                <a asp-action="Index" class="btn btn-default" role="button">
+                    <span class="glyphicon glyphicon-backward" />
+                    VOLTAR
+                </a>
+            </div>
+            <div class="form-group pull-right">
+                <a asp-action="Edit" asp-route-id="@Model.GameId" title="Edit" class="btn btn-primary">
+                    <span class="glyphicon">Editar !!</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="panel panel-default">
+            <table class="table table-bordered table-responsive table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            Foto
+                        </th>
+                        <th>
+                            Nome
+                        </th>
+                        <th>
+                            Data Emprestimo
+                        </th>
+                        <th>
+                            Previsao Retorno
+                        </th>
+                        <th>
+                            Data Devolucao
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Loans)
+                    {
+                        <tr style="height: 10px; max-height:25px; padding: 0px">
+                            <td>
+                                <img src="@Html.DisplayFor(modelItem => item.Friend.ImagePath)"/>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Friend.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LoanDate)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DevolutionPrevision)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EfetiveDevolution)
+                            </td>
+                            @if (item.EfetiveDevolution == null)
+                            {
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Game.GameId" title="Dar Baixa" class="btn btn-warning">
+                                        <span class="glyphicon glyphicon-check"></span>
+                                    </a>
+
+                                    <a asp-action="Details" asp-route-id="@item.Game.GameId" title="Visualizar" class="btn btn-primary">
+                                        <span class="glyphicon glyphicon-eye-open"></span>
+                                    </a>
+
+                                    <a href="#" title="Enviar SMS Solicitando Devolucao" class="btn btn-danger">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </a>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -13,6 +13,7 @@ namespace GameHub.Infra.Server.Data.Context
 
         public DbSet<Friend> Friends { get; set; }
         public DbSet<Game> Games { get; set; }
+        public DbSet<Loan> Loans { get; set; }
         public DbSet<Console> Consoles { get; set; }
 
         public GameHub_Context(IConfiguration configuration)

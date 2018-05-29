@@ -1,10 +1,12 @@
 ﻿
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using GameHub.Infra.Server.IoC;
+using GameHub.Application.AutoMapper;
 
 namespace GameHube.UI.Web.Site
 {
@@ -21,6 +23,13 @@ namespace GameHube.UI.Web.Site
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services.AddAutoMapper();
+            /*
+            services.AddSingleton(Mapper.Configuration);
+            services.AddScoped<IMapper>(sp => new Mapper(sp.GetRequiredService<AutoMapper.IConfigurationProvider>(), sp.GetService));
+            */
+            AutoMapperConfig.RegisterMappings();
 
             services.AddSingleton<IConfiguration>(this.Configuration);
 

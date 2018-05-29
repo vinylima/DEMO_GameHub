@@ -21,12 +21,12 @@ namespace GameHub.Shared.Kernel.Core.Interfaces.Repositories
 
         Task<IExecutionResult<BaseCollection<TEntity>>> GetAllAsync();
 
-        IExecutionResult<BaseCollection<TEntity>> Find(Expression<Func<TEntity, bool>> predicate, bool tracking);
+        IExecutionResult<BaseCollection<TEntity>> Find(Expression<Func<TEntity, bool>> predicate);
 
-        Task<IExecutionResult<BaseCollection<TEntity>>> FindAsync(Expression<Func<TEntity, bool>> predicate, bool tracking);
+        Task<IExecutionResult<BaseCollection<TEntity>>> FindAsync(Expression<Func<TEntity, bool>> predicate);
 
-        IExecutionResult<IQueryable<TEntity>> Where(Expression<Func<TEntity, bool>> predicate, bool tracking);
+        IExecutionResult<IQueryable<TEntity>> Where(Expression<Func<TEntity, bool>> predicate);
 
-        Task<IExecutionResult<IQueryable<TEntity>>> WhereAsync(Expression<Func<TEntity, bool>> predicate, bool tracking);
+        Task<IExecutionResult<IQueryable<TEntity>>> WhereAsync(Expression<Func<TEntity, bool>> predicate);
     }
 }

@@ -1,4 +1,5 @@
 ﻿
+using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 
 using GameHub.Infra.Server.Data.Context;
@@ -8,6 +9,7 @@ using GameHub.Domain.Core.Interfaces.Services;
 using GameHub.Domain.Core.Services;
 using GameHub.Domain.Core.Interfaces.Repositories;
 using GameHub.Infra.Server.Data.Repositories;
+using Microsoft.Extensions.Configuration;
 
 namespace GameHub.Infra.Server.IoC
 {
@@ -16,7 +18,7 @@ namespace GameHub.Infra.Server.IoC
         public static void AddGameHubDependencies(this IServiceCollection services)
         {
             services.AddDbContext<GameHub_Context>();
-
+            
             // Application Services
             services.AddScoped<IGameAppService, GameAppService>();
             services.AddScoped<IFriendAppService, FriendAppService>();
@@ -28,6 +30,12 @@ namespace GameHub.Infra.Server.IoC
             // Repositories
             services.AddScoped<IGameRepository, GameRepository>();
             services.AddScoped<IFriendRepository, FriendRepository>();
+            
+            DbInitializer.Initialize(
+                new GameHub_Context(
+                    services.BuildServiceProvider().GetService<IConfiguration>()
+                )
+            );
         }
     }
 }

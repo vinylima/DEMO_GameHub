@@ -14,4 +14,8 @@
     <ProjectReference Include="..\GameHub.Domain.Core\GameHub.Domain.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\Friends\" />
+  </ItemGroup>
+
 </Project>

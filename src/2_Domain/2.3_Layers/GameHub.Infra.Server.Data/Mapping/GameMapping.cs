@@ -26,8 +26,8 @@ namespace GameHub.Infra.Server.Data.Mapping
 
             builder.Property(g => g.LastLoan)
                 .IsRequired(false);
-
-            builder.Ignore(g => g.Friend);
+            
+            builder.Ignore(g => g.CurrentLoan);
         }
     }
 }
